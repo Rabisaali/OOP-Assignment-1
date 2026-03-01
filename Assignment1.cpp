@@ -262,6 +262,17 @@ public:
         if(favCount < 10) favorites[favCount++] = c; 
     }
 
+    void displayFavorite() {
+        if (favCount>0) {
+            for (int i=0; i<favCount; i++) {
+                favorites[i].displayInfo();
+            }
+        }
+        else {
+            cout << "No favorites to display :(\n";
+        }
+    }
+
     void removeFavorite(int index) {
         if(index >= 0 && index < favCount) {
             for(int i=index; i<favCount-1; i++) favorites[i] = favorites[i+1];
@@ -468,50 +479,86 @@ public:
 // -------------------- Main Function --------------------
 
 int main() {
-    Marketplace market;
-    Seller s1(1, "Ali", "0300-1234567");
-    market.registerSeller(&s1);
-    Buyer b1(101, "Rabisa", "0333-9876543", "NA", &market);
-    Admin a1(999, "Admin", "admin@market.com");
+    cout << "========== Car Marketplace System ==========\n\n";
+    // Creating Marketplace Object
+    Marketplace market("PakWheels Clone");
 
-    
+    // Creating Seller Object 
+    Review sellerReview1(1, 101, 1, 5, "Excellent seller!", "01-06-2024");
+    Seller s1(1, "Ali", "0300-1234567", 4.8, sellerReview1);
+    market.registerSeller(&s1);   // Aggregation
+
+    // Creating Buyer Object 
+    Buyer b1(101, "Rabisa", "0333-9876543", "rabisa@email.com", &market);
+
+    // Creating Admin Object
+    Admin a1(999, "System Admin", "admin@market.com");
+
+    // Creating Cars 
     Car c1("Toyota", "Corolla", 2020, 25000, 30000);
     Car c2("Honda", "Civic", 2019, 22000, 40000);
+    Car c3("Suzuki", "Swift", 2021, 20000, 15000);
 
-    Car* const ptr1 = &c1;        
-    Car* const ptr2 = &c2;
-
-    Car* const ptr3 = market.getListings(); 
-
-    Seller* const ptr4 = &s1;
-    Buyer* const ptr5 = &b1;
-
-    // Seller adds cars
-    s1.addCar(c1);
-    s1.addCar(c2);
-
-    // Marketplace adds listings
+    // Add Listings
+    cout << "\n--- Adding Listings ---\n";
     market.addListing(c1);
     market.addListing(c2);
+    market.addListing(c3);
 
-    // Buyer searches
-    cout << "\nBuyer searching for Toyota cars:\n";
-    b1.searchCars("Toyota");
-
-    // Admin approves
-    a1.approveListing(c1);
-
-    // Show all listings
-    cout << "\nAll Listings:\n";
     market.showAllListings();
 
-    // Payment
-    Payment p1(1, 25000, 101, 1, "Credit Card");
-    p1.processPayment();
+    // Update Listing
+    cout << "\n--- Updating Listing (Civic price change) ---\n";
+    c2.updateDetails("Honda", "Civic", 2019, 21000, 40000);
+    market.deleteListing(1);
+    market.addListing(c2);
+    market.showAllListings();
 
-    // Review
-    Review r1(1, 101, 1, 5, "Excellent seller!");
-    r1.displayReview();
+    //  Delete Listing 
+    cout << "\n--- Deleting Listing (Swift removed) ---\n";
+    market.deleteListing(1);
+    market.showAllListings();
 
-    cout << "\nTotal Listings: " << Marketplace::getTotalListings() << endl;
+    // Search By Brand 
+    cout << "\n--- Buyer Searching for Toyota ---\n";
+    b1.searchCars("Toyota");
+
+    // Filter Using SearchFilter Class
+    cout << "\n--- Applying Search Filter (Brand: Honda) ---\n";
+    SearchFilter filter("Honda");
+    filter.applyFilter(market.getListings(), market.getListingCount());
+
+    // Buyer Saves Favorites 
+    cout << "\n--- Buyer Saving Favorite ---\n";
+    b1.addFavorite(c1);
+    b1.displayFavorite();
+    
+    // Buyer Sends Message 
+    cout << "\n--- Buyer Sending Message ---\n";
+    b1.sendMessage("Is this car still available?");
+
+    // Admin Approves Listing 
+    cout << "\n--- Admin Approving Listing ---\n";
+    a1.approveListing(c1);
+
+    // Admin Removes Listing
+    cout << "\n--- Admin Removing Listing ---\n";
+    int size = market.getListingCount();
+    Car* listings = market.getListings();
+    a1.removeListing(listings, size, 0);
+
+    cout << "\nRemaining Listings After Admin Removal:\n";
+    for(int i=0; i<size; i++) {
+        listings[i].displayInfo();
+    }
+
+    // Static Member Demonstration 
+    cout << "\nTotal Listings (Static): " << Marketplace::getTotalListings() << endl;
+
+    // Calling Static Member Function
+    Admin::displayTotalAdmins();
+
+    cout << "\n========== End of Simulation ==========\n";
+
+    return 0;
 }
