@@ -489,7 +489,7 @@ int main() {
     market.registerSeller(&s1);   // Aggregation
 
     // Creating Buyer Object 
-    Buyer b1(101, "Rabisa", "0333-9876543", "rabisa@email.com", &market);
+    Buyer b1(101, "Rabisa", "0333-9876543", "xyz@email.com", &market);
 
     // Creating Admin Object
     Admin a1(999, "System Admin", "admin@market.com");
