@@ -95,7 +95,7 @@ private:
     int sellerID;
     string name, contact;
     double rating;
-    Car cars[10];
+    Car cars[10]; //composition
     int carCount;
     Review sellerReview; //composition
 
@@ -132,15 +132,15 @@ public:
     }
 };
 
-// -------------------- Marketplace Class --------------------
+// -------------------- Marketplace Class (Aggregation+Composition) --------------------
 
 class Marketplace {
 
 private:
     string systemName;
-    Car allListings[50];
+    Car allListings[50]; //composition
     int listingCount;
-    Seller* sellers[20];
+    Seller* sellers[20]; //aggregation
     int sellerCount;
     static int totalListings;
     static int totalUsers;
@@ -244,14 +244,14 @@ public:
 int Marketplace::totalListings = 0;
 int Marketplace::totalUsers = 0;
 
-// -------------------- Buyer Class (aggregation)--------------------
+// -------------------- Buyer Class (aggregation+composition)--------------------
 
 class Buyer {
 
 private:
     int buyerID;
     string name, contact, email;
-    Car favorites[10];
+    Car favorites[10]; //composition
     int favCount;
     Marketplace* market; //aggregation
 
@@ -296,7 +296,7 @@ public:
     }
 };
 
-// -------------------- Admin Class(aggregation) --------------------
+// -------------------- Admin Class --------------------
 
 class Admin {
 
@@ -312,7 +312,7 @@ public:
     Admin(int id=0, string n="NA", string e="NA", string r="Moderator") : adminID(id), name(n), email(e), role(r), approvedCount(0), removedCount(0) {
         totalAdmins++;
     }
-    // aggregation
+    //Association
     void approveListing(Car &c) { 
         cout << "Listing approved for: "; 
         c.displayInfo();
@@ -330,7 +330,7 @@ public:
     static void displayTotalAdmins() {
         cout << "Total Admins: " << totalAdmins << endl;
     }
-
+    //Association
     void banSeller(Seller &s) {
         s.displayInfo();
         cout << "Seller banned\n";
@@ -415,11 +415,11 @@ private:
 public:
     SearchFilter(string b="Any", string m="Any", double minP=0, double maxP=999999, int y=0, int mil=999999)
         : brand(b), model(m), minPrice(minP), maxPrice(maxP), minYear(y), maxMileage(mil) {}
-
+    //Association
     bool matchCar(const Car &c) const { 
         return (c.getBrand()==brand || brand=="Any"); 
     }
-
+    //Association
     void applyFilter(Car cars[], int size) { 
         for(int i=0; i<size; i++) {
             if(matchCar(cars[i])) cars[i].displayInfo();
@@ -434,7 +434,7 @@ public:
         minYear=0; 
         maxMileage=999999; 
     }
-
+    //Association
     void showResults(Car cars[], int size) { 
         applyFilter(cars,size); 
     }
@@ -458,7 +458,7 @@ public:
 
     void processPayment() { 
         status=true; 
-        cout << "Payment processed: $" << amount*(1+TAX_RATE) << endl; 
+        cout << "Payment processed: PKR" << amount*(1+TAX_RATE) << endl; 
     }
 
     void refundPayment() { 
@@ -467,7 +467,7 @@ public:
     }
 
     void generateInvoice() { 
-        cout << "Invoice generated for $" << amount << endl; 
+        cout << "Invoice generated for PKR" << amount << endl; 
     }
 
     void verifyPayment() { 
